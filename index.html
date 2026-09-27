@@ -4,17 +4,19 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Freelancer quarterly estimated tax calculator (2026) — retn</title>
-<meta name="description" content="Estimate your 2026 federal, self-employment and state quarterly taxes as a freelancer or 1099 contractor. Shows every step of the math. Free, no signup.">
+<meta name="description" content="What do you owe on January 15? Estimate your 2026 federal, self-employment and state quarterly taxes as a freelancer or 1099 contractor, including the minimum that avoids a penalty. Shows every step of the math. Free, no signup.">
 <link rel="canonical" href="https://retn.ai/">
 <style>
-  :root{--ink:#1a1a1a;--muted:#666;--line:#e3e3e3;--bg:#fff;--accent:#0b5cad;--soft:#f6f7f9;--warn:#8a5a00;--warnbg:#fff6e0}
+  :root{--ink:#1a1a1a;--muted:#666;--line:#e3e3e3;--bg:#fff;--accent:#0b5cad;--soft:#f6f7f9;--warn:#8a5a00;--warnbg:#fff6e0;--good:#1f6b3a;--goodbg:#eaf6ee}
   *{box-sizing:border-box}
   body{margin:0;font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;color:var(--ink);background:var(--bg)}
   main{max-width:720px;margin:0 auto;padding:32px 20px 80px}
-  h1{font-size:28px;line-height:1.25;margin:0 0 8px}
+  .kicker{font-size:13px;letter-spacing:.02em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+  h1{font-size:30px;line-height:1.2;margin:0 0 8px}
   h2{font-size:20px;margin:32px 0 8px}
   p{margin:8px 0}
-  .lead{color:var(--muted);margin-bottom:24px}
+  .lead{color:var(--muted);margin-bottom:8px}
+  .trust{font-size:13px;color:var(--muted);margin:0 0 20px}
   form{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px;background:var(--soft);padding:18px;border-radius:10px}
   label{display:flex;flex-direction:column;font-size:14px;color:var(--muted);gap:4px}
   input,select{font:inherit;padding:9px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;color:var(--ink)}
@@ -22,26 +24,35 @@
   .hint{font-size:12px;color:var(--muted)}
   .result{margin-top:24px;border:1px solid var(--line);border-radius:10px;padding:18px}
   .big{font-size:34px;font-weight:600;margin:4px 0}
+  .sub{font-size:15px;margin:0 0 12px}
   .row{display:flex;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px dashed var(--line)}
-  .row:last-child{border-bottom:0}
+  .row:last-of-type{border-bottom:0}
   .row span:last-child{font-variant-numeric:tabular-nums;white-space:nowrap}
+  .why{background:var(--goodbg);color:var(--good);padding:10px 12px;border-radius:8px;font-size:14px;margin-top:12px}
   details{margin-top:14px}
   summary{cursor:pointer;color:var(--accent)}
   table{width:100%;border-collapse:collapse;font-size:14px;margin-top:8px}
   td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}
-  td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+  td:last-child{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:12px}
   .note{background:var(--warnbg);color:var(--warn);padding:10px 12px;border-radius:8px;font-size:14px;margin-top:16px}
+  .inline-cta{margin-top:18px;padding:14px 16px;border-radius:8px;background:var(--soft);border-left:4px solid var(--accent)}
+  .inline-cta .actions{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 6px}
+  .btn{font:inherit;font-size:14px;padding:7px 14px;border-radius:6px;border:1px solid var(--accent);background:#fff;color:var(--accent);cursor:pointer;text-decoration:none}
+  .btn.primary{background:var(--accent);color:#fff}
   .cta{margin-top:36px;padding:20px;border:2px solid var(--accent);border-radius:10px}
   .cta h2{margin-top:0}
-  .cta code{background:var(--soft);padding:2px 6px;border-radius:4px;font-size:15px}
+  code{background:var(--soft);padding:2px 6px;border-radius:4px;font-size:15px}
+  .inline-cta code{background:#fff}
   footer{margin-top:48px;font-size:13px;color:var(--muted)}
-  @media (max-width:560px){form{grid-template-columns:1fr}}
+  @media (max-width:560px){form{grid-template-columns:1fr} h1{font-size:26px}}
 </style>
 </head>
 <body>
 <main>
-  <h1>Freelancer quarterly estimated tax calculator (2026)</h1>
-  <p class="lead">For US sole proprietors and 1099 contractors. Enter your numbers; every step of the math is shown below the result. Nothing is stored.</p>
+  <p class="kicker">Freelancer quarterly estimated tax calculator · 2026</p>
+  <h1 id="headline">What do you owe the IRS on January 15?</h1>
+  <p class="lead">For US sole proprietors and 1099 contractors. Get the <strong>minimum that avoids a penalty</strong> and your full bill. Every step of the math is shown below the result. Nothing is stored.</p>
+  <p class="trust">Same tax logic as retn's bookkeeping engine, checked against IRS worksheets and an independent open-source tax model.</p>
 
   <form id="f" onsubmit="return false">
     <label>Net profit so far this year (income minus business expenses)
@@ -76,7 +87,7 @@
     </label>
     <label>Last year's total federal tax (line 24 of your 2025 Form 1040)
       <input id="prior" type="text" inputmode="decimal" placeholder="optional">
-      <span class="hint">Unlocks the safe-harbor comparison.</span>
+      <span class="hint">Often lowers your minimum a lot. Enter 0 if you owed no tax last year.</span>
     </label>
     <label class="full" style="flex-direction:row;align-items:center;gap:8px">
       <input id="highagi" type="checkbox" style="width:auto"> Last year's AGI was over $150,000 ($75,000 if married filing separately)
@@ -87,10 +98,25 @@
   <div id="out" class="result" hidden>
     <div class="hint" id="qlabel"></div>
     <div class="big" id="qamount"></div>
-    <div class="row"><span>Federal (income tax + self-employment tax)</span><span id="qfed"></span></div>
-    <div class="row"><span>State estimate</span><span id="qst"></span></div>
-    <div class="row"><span>Safe harbor status</span><span id="sh"></span></div>
+    <p class="sub" id="qsub"></p>
+
+    <div class="row"><span>Federal minimum to avoid a penalty</span><span id="qfed"></span></div>
+    <div class="row"><span>State estimate due</span><span id="qst"></span></div>
+    <div class="row"><span>Full 2026 federal bill still unpaid</span><span id="fullbill"></span></div>
+    <div class="row"><span>Projected 2026 federal tax (income + self-employment)</span><span id="totfed"></span></div>
+
+    <div class="why" id="why"></div>
     <div class="note" id="early" hidden>Fewer than 45 days into the year: projection uses your year-to-date profit without scaling.</div>
+
+    <div class="inline-cta">
+      <strong>Don't want to redo this every quarter?</strong>
+      Forward your payout emails and receipts to <code>try@in.retn.ai</code>. retn keeps this number up to date from your real income and expenses, and emails you a week before each deadline.
+      <div class="actions">
+        <button class="btn primary" id="copyaddr" type="button">Copy address</button>
+        <a class="btn" href="mailto:try@in.retn.ai?subject=Start%20my%20books">Open in my email app</a>
+      </div>
+      <div class="hint">retn never connects to your inbox. It only sees what you send.</div>
+    </div>
 
     <details>
       <summary>Show the math</summary>
@@ -100,7 +126,7 @@
     <details>
       <summary>How to pay</summary>
       <p>Federal: <a href="https://www.irs.gov/payments/direct-pay" rel="noopener">IRS Direct Pay</a> → "Estimated tax" → tax year 2026. State: your state's revenue department site (search "&lt;state&gt; estimated tax payment online").</p>
-      <p>2026 due dates: April 15, June 15, September 15, and January 15, 2027.</p>
+      <p>2026 due dates: April 15, June 15, September 15, and January 15, 2027. Anything above the minimum can wait until you file (April 15, 2027) without a penalty.</p>
     </details>
   </div>
 
@@ -111,30 +137,37 @@
   </section>
 
   <h2>Notes</h2>
-  <p>This calculator assumes all income is self-employment income, the standard deduction, no dependents or credits, and the 20% qualified business income deduction where the income threshold allows. It ignores state brackets, local taxes, and the additional 0.9% Medicare tax on wages. It is an estimate, not tax advice.</p>
+  <p>This calculator assumes all income is self-employment income, the standard deduction, and no dependents or credits. It includes the 20% qualified business income (QBI) deduction with its 2026 limits (capped at 20% of taxable income, phased out at higher incomes, $400 minimum) and the 0.9% Additional Medicare Tax. Above the QBI income threshold it assumes a service business (consulting, design, writing, etc.), which gives a slightly higher, more cautious estimate. It ignores state brackets and local taxes. It is an estimate, not tax advice.</p>
   <p id="verified" class="hint"></p>
 
   <footer>© retn.ai · <a href="/privacy.html">Privacy</a> · retn never connects to your inbox. It only sees what you send.</footer>
 </main>
 
 <script>
-/* ===== TAX CONSTANTS — VERIFY BEFORE PUBLISHING =====
-   Sources to check: IRS Rev. Proc. 2025-32 (2026 brackets, standard deduction, QBI threshold),
-   SSA 2026 wage base announcement, IRC §6654 (safe harbor), Form 1040-ES 2026 due dates.
-   Amounts in dollars. */
+/* ===== TAX CONSTANTS =====
+   Sources: IRS Rev. Proc. 2025-32 (2026 brackets, standard deduction, QBI threshold, incl. P.L. 119-21),
+   SSA 2026 wage base announcement, IRC §6654 (safe harbor, $1,000 rule), IRC §199A (QBI), Form 8959.
+   Amounts in dollars. Federal values match retn's engine (src/rules/tax/config.ts). */
 const TAX = {
   year: 2026,
-  verifiedOn: "",                       // e.g. "2026-09-10" once you have checked every value
+  verifiedOn: "2026-09-27",             // federal figures; state rates below are rough estimates only
   stdDeduction: { single: 16100, mfj: 32200, mfs: 16100, hoh: 24150 },
   brackets: {                           // [lower bound, rate]; rate applies from bound to the next bound
     single: [[0,.10],[12400,.12],[50400,.22],[105700,.24],[201775,.32],[256225,.35],[640600,.37]],
     mfj:    [[0,.10],[24800,.12],[100800,.22],[211400,.24],[403550,.32],[512450,.35],[768700,.37]],
     mfs:    [[0,.10],[12400,.12],[50400,.22],[105700,.24],[201775,.32],[256225,.35],[384350,.37]],
-    hoh:    [[0,.10],[17700,.12],[67500,.22],[105700,.24],[201750,.32],[256200,.35],[640600,.37]]
+    hoh:    [[0,.10],[17700,.12],[67450,.22],[105700,.24],[201750,.32],[256200,.35],[640600,.37]]
   },
-  se: { factor: .9235, ssRate: .124, ssWageBase: 184500, medicareRate: .029 },
-  qbi: { rate: .20, threshold: { single: 201300, mfj: 402600, mfs: 201300, hoh: 201300 } },
-  safeHarbor: { currentPct: .90, priorPct: 1.00, priorPctHighAgi: 1.10 },
+  se: { factor: .9235, ssRate: .124, ssWageBase: 184500, medicareRate: .029, minNetEarnings: 400 },
+  addlMedicare: { rate: .009, threshold: { single: 200000, mfj: 250000, mfs: 125000, hoh: 200000 } },
+  qbi: {
+    rate: .20,
+    threshold:   { single: 201750, mfj: 403500, mfs: 201750, hoh: 201750 },
+    phaseRange:  { single: 75000,  mfj: 150000, mfs: 75000,  hoh: 75000 },
+    minDeduction: 400, minQbi: 1000,    // new for 2026 (OBBBA)
+    assumeServiceBusiness: true         // cautious: service businesses phase out faster
+  },
+  safeHarbor: { currentPct: .90, priorPct: 1.00, priorPctHighAgi: 1.10, noPenaltyBelow: 1000 },
   dueDates: ["2026-04-15","2026-06-15","2026-09-15","2027-01-15"],
   states: {                             // rough flat effective rates for the estimate only
     none: ["AK","FL","NV","NH","SD","TN","TX","WA","WY"],
@@ -148,15 +181,36 @@ const $ = id => document.getElementById(id);
 const money = n => (n<0?"-":"") + "$" + Math.abs(Math.round(n)).toLocaleString("en-US");
 const pct = r => (r*100).toFixed(1) + "%";
 const num = id => { const v = ($(id).value||"").replace(/[$,\s]/g,""); const n = parseFloat(v); return isFinite(n)?n:0; };
+const localDate = s => new Date(s + "T12:00:00");               // parse YYYY-MM-DD as local noon (no timezone shift)
+const longDate = s => localDate(s).toLocaleDateString("en-US", { month:"long", day:"numeric", year:"numeric" });
+const todayStr = () => { const d=new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`; };
+const nextDueIndex = d => { const i = TAX.dueDates.findIndex(s => new Date(s+"T23:59:59") >= d); return i<0 ? 3 : i; };
 
 (function init(){
   const sel = $("st");
   ALL_STATES.forEach(s => { const o=document.createElement("option"); o.value=s; o.textContent=s; sel.appendChild(o); });
   sel.value = "CA";
-  $("asof").value = new Date().toISOString().slice(0,10);
-  $("verified").textContent = TAX.verifiedOn ? `Tax figures verified against IRS/SSA sources on ${TAX.verifiedOn}.` : `Tax year ${TAX.year} figures; verify against IRS Rev. Proc. 2025-32 before relying on them.`;
+  $("asof").value = todayStr();
+  // Headline follows the next deadline (January 15 from mid-September until mid-January)
+  const q = nextDueIndex(new Date());
+  const d = localDate(TAX.dueDates[q]);
+  $("headline").textContent = `What do you owe the IRS on ${d.toLocaleDateString("en-US",{month:"long",day:"numeric"})}?`;
+  $("verified").textContent = TAX.verifiedOn
+    ? `Federal tax figures verified against IRS/SSA sources on ${TAX.verifiedOn}. State figures are rough flat-rate estimates.`
+    : `Tax year ${TAX.year} figures; verify against IRS Rev. Proc. 2025-32 before relying on them.`;
   $("go").addEventListener("click", calc);
+  $("copyaddr").addEventListener("click", copyAddress);
 })();
+
+function copyAddress(){
+  const addr = "try@in.retn.ai", b = $("copyaddr");
+  const done = () => { b.textContent = "Copied ✓"; setTimeout(()=>{ b.textContent = "Copy address"; }, 2000); };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(addr).then(done, () => { window.prompt("Copy this address:", addr); });
+  } else {
+    window.prompt("Copy this address:", addr);
+  }
+}
 
 function bracketTax(taxable, br){
   let tax=0, rows=[];
@@ -169,81 +223,135 @@ function bracketTax(taxable, br){
   return {tax, rows};
 }
 
+/* QBI deduction (IRC §199A, Form 8995 / 8995-A) for a sole proprietor with no W-2 employees. */
+function qbiDeduction(qbiBase, taxableBeforeQbi, fs){
+  const Q = TAX.qbi;
+  if (qbiBase <= 0) return { amount: 0, note: "no qualified business income" };
+  const thd = Q.threshold[fs], range = Q.phaseRange[fs];
+  let amt = Q.rate * qbiBase, note = "20% of QBI";
+  if (taxableBeforeQbi >= thd + range) {
+    amt = 0; note = "fully phased out at this income";
+  } else if (taxableBeforeQbi > thd) {
+    const frac = (taxableBeforeQbi - thd) / range;              // 0..1 through the phase-in range
+    if (Q.assumeServiceBusiness) amt *= (1 - frac);             // service business: QBI reduced first
+    amt -= frac * amt;                                          // wage limit ($0 with no employees) phases in
+    note = `partly phased out (${Math.round(frac*100)}% into the phase-out range)`;
+  }
+  const cap = Q.rate * taxableBeforeQbi;                        // cannot exceed 20% of taxable income before QBI
+  if (amt > cap) { amt = cap; note = "capped at 20% of taxable income"; }
+  if (qbiBase >= Q.minQbi && amt < Q.minDeduction) { amt = Q.minDeduction; note = "2026 $400 minimum"; }
+  return { amount: amt, note };
+}
+
 function calc(){
   const ytd=num("ytd"), fs=$("fs").value, st=$("st").value;
-  const paidFed=num("paidfed"), paidSt=num("paidst"), w2=num("w2"), prior=num("prior"), highAgi=$("highagi").checked;
-  const asof=new Date($("asof").value||Date.now());
-  const y=TAX.year;
-  const start=new Date(y,0,1), days=Math.max(1,Math.round((asof-start)/86400000)+1);
+  const paidFed=num("paidfed"), paidSt=num("paidst"), w2=num("w2"), highAgi=$("highagi").checked;
+  const priorEntered = ($("prior").value||"").trim() !== "";
+  const prior = num("prior");
+  const asof = localDate($("asof").value || todayStr());
+  const y = TAX.year;
+  const start = new Date(y,0,1,12);
+  const days = Math.min(365, Math.max(1, Math.floor((asof-start)/86400000)+1));  // Jan 1–15 of next year counts as a full year
   const early = days<45;
   const scale = early?1:365/days;
   const projected = Math.max(0, ytd*scale);
 
-  // Self-employment tax
-  const seNet = projected*TAX.se.factor;
+  // Self-employment tax (Schedule SE)
+  const seNetRaw = projected*TAX.se.factor;
+  const seNet = seNetRaw < TAX.se.minNetEarnings ? 0 : seNetRaw;          // no SE tax under $400
   const ssPortion = Math.min(seNet, TAX.se.ssWageBase)*TAX.se.ssRate;
   const medPortion = seNet*TAX.se.medicareRate;
   const seTax = ssPortion+medPortion;
   const halfSe = seTax/2;
 
+  // Additional Medicare Tax (Form 8959): separate tax, NOT part of the half-SE deduction
+  const addlThd = TAX.addlMedicare.threshold[fs];
+  const addlMed = Math.max(0, seNet - addlThd) * TAX.addlMedicare.rate;
+
   // Income tax
   const agi = projected-halfSe;
   const std = TAX.stdDeduction[fs];
-  const qbiAllowed = (agi-std) <= TAX.qbi.threshold[fs];
-  const qbi = qbiAllowed ? TAX.qbi.rate*Math.max(0,projected-halfSe) : 0;
-  const taxable = Math.max(0, agi-std-qbi);
+  const taxableBeforeQbi = Math.max(0, agi-std);
+  const qbiBase = Math.max(0, projected-halfSe);
+  const qbi = qbiDeduction(qbiBase, taxableBeforeQbi, fs);
+  const taxable = Math.max(0, taxableBeforeQbi-qbi.amount);
   const bt = bracketTax(taxable, TAX.brackets[fs]);
-  const totalFed = bt.tax+seTax;
+  const totalFed = bt.tax+seTax+addlMed;
 
   // State (rough)
   const stRate = TAX.states.none.includes(st)?0:(TAX.states.rate[st]??TAX.states.defaultRate);
   const stTax = projected*stRate;
 
-  // Which quarter is next
-  const today=asof; let q=TAX.dueDates.findIndex(d=>new Date(d+"T23:59:59")>=today); if(q<0) q=3; const qn=q+1;
+  // Which installment is next
+  const q = nextDueIndex(asof), qn = q+1, dueStr = TAX.dueDates[q];
 
-  // Required annual payment
-  const req90 = TAX.safeHarbor.currentPct*totalFed;
-  const shPrior = prior>0 ? prior*(highAgi?TAX.safeHarbor.priorPctHighAgi:TAX.safeHarbor.priorPct) : null;
+  // Required annual payment (IRC §6654(d)): lesser of 90% of this year or 100%/110% of last year
+  const SH = TAX.safeHarbor;
+  const req90 = SH.currentPct*totalFed;
+  const shPrior = priorEntered ? prior*(highAgi?SH.priorPctHighAgi:SH.priorPct) : null;
   const required = shPrior!==null ? Math.min(req90, shPrior) : req90;
+  const usedPrior = shPrior!==null && shPrior < req90;
   const cumTarget = required*(qn/4);
-  const credits = paidFed + w2*(qn/4);
-  const fedDue = Math.max(0, cumTarget-credits);
+  const w2Applied = w2*(qn/4);
+  const credits = paidFed + w2Applied;
+  const remainingBalance = totalFed - paidFed - w2Applied;
+  const underThousand = qn===4 && remainingBalance < SH.noPenaltyBelow;   // no penalty if you'd owe < $1,000 at filing
+  const fedDue = underThousand ? 0 : Math.max(0, cumTarget-credits);
+  const fullBill = Math.max(0, totalFed - paidFed - w2);
   const stDue = Math.max(0, stTax*(qn/4)-paidSt);
 
   // Output
   $("out").hidden=false; $("early").hidden=!early;
-  $("qlabel").textContent=`Q${qn} payment due ${TAX.dueDates[q]}`;
-  $("qamount").textContent=money(fedDue+stDue);
-  $("qfed").textContent=money(fedDue);
-  $("qst").textContent=stRate?money(stDue):"$0 (no state income tax)";
-  $("sh").textContent = shPrior!==null
-    ? (credits>=shPrior*(qn/4) ? `On track (prior-year safe harbor ${money(shPrior)})` : `Below prior-year safe harbor by ${money(shPrior*(qn/4)-credits)} so far`)
-    : "Enter last year's tax to check";
+  $("qlabel").textContent = `Pay by ${longDate(dueStr)} to stay penalty-free (installment ${qn} of 4)`;
+  $("qamount").textContent = money(fedDue+stDue);
+  $("qsub").textContent = fullBill > fedDue + 1
+    ? `That's the minimum. Your full 2026 federal bill still unpaid is ${money(fullBill)}. Paying more now is optional; the rest can wait until April 15, 2027.`
+    : `This covers your projected 2026 federal tax.`;
+  $("qfed").textContent = money(fedDue);
+  $("qst").textContent = stRate?money(stDue):"$0 (no state income tax)";
+  $("fullbill").textContent = money(fullBill);
+  $("totfed").textContent = money(totalFed);
+
+  let why;
+  if (underThousand) {
+    why = `You'd owe less than ${money(SH.noPenaltyBelow)} when you file, so there's no federal underpayment penalty. Nothing more is required by ${longDate(dueStr)}.`;
+  } else if (shPrior===null) {
+    why = `Your minimum is based on 90% of this year's projected tax (${money(req90)}). Enter last year's total tax: if it was lower, your minimum may drop a lot.`;
+  } else if (usedPrior) {
+    why = `Your minimum uses ${highAgi?"110%":"100%"} of last year's tax (${money(shPrior)}), which is lower than 90% of this year's (${money(req90)}). This is the IRS "safe harbor" rule.`;
+  } else {
+    why = `Your minimum uses 90% of this year's projected tax (${money(req90)}), which is lower than ${highAgi?"110%":"100%"} of last year's (${money(shPrior)}).`;
+  }
+  if (!underThousand && fedDue===0) why += ` You've already paid enough through installment ${qn}.`;
+  $("why").textContent = why;
 
   const rows=[
     ["Year-to-date net profit", money(ytd)],
     [`Days elapsed / projection factor`, `${days} / ×${scale.toFixed(3)}`],
     ["Projected full-year net profit", money(projected)],
-    ["Net earnings subject to SE tax (×92.35%)", money(seNet)],
+    [`Net earnings subject to SE tax (×92.35%${seNetRaw>0&&seNet===0?"; under $400, so none":""})`, money(seNet)],
     [`Social Security 12.4% (up to ${money(TAX.se.ssWageBase)})`, money(ssPortion)],
     ["Medicare 2.9%", money(medPortion)],
     ["Self-employment tax", money(seTax)],
     ["Deduct half of SE tax", "−"+money(halfSe)],
     ["Adjusted gross income", money(agi)],
     [`Standard deduction (${fs})`, "−"+money(std)],
-    [qbiAllowed?"QBI deduction (20%)":"QBI deduction (over threshold; not modeled)", "−"+money(qbi)],
+    ["Taxable income before QBI", money(taxableBeforeQbi)],
+    [`QBI deduction (${qbi.note})`, "−"+money(qbi.amount)],
     ["Taxable income", money(taxable)],
     ...bt.rows,
     ["Federal income tax", money(bt.tax)],
-    ["Total federal (income + SE)", money(totalFed)],
-    ["Required annual payment (90% of current year)", money(req90)],
-    ...(shPrior!==null?[[`Prior-year safe harbor (${highAgi?"110%":"100%"} of last year)`, money(shPrior)],["Required = lesser of the two", money(required)]]:[]),
-    [`Cumulative target through Q${qn} (${qn}/4)`, money(cumTarget)],
-    ["Credits: paid so far + W-2 withholding prorated", "−"+money(credits)],
-    ["Federal due this quarter", money(fedDue)],
+    ...(addlMed>0?[[`Additional Medicare Tax (0.9% over ${money(addlThd)})`, money(addlMed)]]:[]),
+    ["Total federal (income + SE" + (addlMed>0?" + Additional Medicare)":")"), money(totalFed)],
+    ["90% of this year's tax", money(req90)],
+    ...(shPrior!==null?[[`${highAgi?"110%":"100%"} of last year's tax`, money(shPrior)],["Required annual payment = lesser of the two", money(required)]]:[["Required annual payment", money(required)]]),
+    [`Cumulative target through installment ${qn} (${qn}/4)`, money(cumTarget)],
+    ["Credits: estimates paid + W-2 withholding prorated", "−"+money(credits)],
+    ...(underThousand?[["Projected balance at filing is under $1,000: no penalty", "$0"]]:[]),
+    ["Federal minimum due now", money(fedDue)],
+    ["Full federal bill still unpaid (total − paid − withholding)", money(fullBill)],
     [`State estimate (${st} ${stRate?pct(stRate):"none"} × projected profit)`, money(stTax)],
-    ["State due this quarter (prorated, less paid)", money(stDue)]
+    ["State due this installment (prorated, less paid)", money(stDue)]
   ];
   $("math").innerHTML = rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join("");
 }
